@@ -1,0 +1,11 @@
+{
+  "author": "Marcel Timmerman",
+  "depends": [
+  ],
+  "description": "Neo4j driver",
+  "name": "Neo4j",
+  "provides": {
+  },
+  "source-url": "git://github.com/MARTIMM/neo4j-perl6-driver.git",
+  "version": "0.0.1"
+}

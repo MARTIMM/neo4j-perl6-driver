@@ -1,0 +1,15 @@
+# Neo4j Graph Database Driver
+
+![Leaf](doc/neo4j-logo-2015.png)
+
+We are at the beginning of the beginning. Just exploring, then after some time
+something beautiful will grow.
+
+## CHANGELOG
+
+See [semantic versioning](http://semver.org/). Please note point 4. on
+that page: *Major version zero (0.y.z) is for initial development. Anything may
+change at any time. The public API should not be considered stable.*
+
+* 0.0.1
+  Initial setup and tests
