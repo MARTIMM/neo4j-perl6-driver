@@ -2,6 +2,11 @@ use v6;
 
 package Neo4j:ver<0.0.1> {
 
-  our enum ErrorCode <SUCCESS CONNECT-FAIL>;
+  our enum ErrorCode <
+    SUCCESS CONNECT-FAIL
+
+    HTTP-INFORMATIONAL HTTP-SUCCESS HTTP-REDIRECTION
+    HTTP-ERROR HTTP-CLIENT-ERROR HTTP-SERVER-ERROR
+  >;
 
 }

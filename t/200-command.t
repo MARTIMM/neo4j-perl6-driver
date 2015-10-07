@@ -1,5 +1,6 @@
 #`{{
   Testing;
+    Header
     Command
 }}
 
@@ -35,8 +36,8 @@ subtest {
 #
 subtest {
   my Neo4j::Connection $connection .= new( :host<localhost>, :port(7474));
-  my Neo4j::Command $command .= new;
-  my Str $cmd = $command.build-command( :$connection, :path</user/neo4j>);
+  my Neo4j::Command $command .= new(:$connection);
+  my Str $cmd = $command.build-command(:path</user/neo4j>);
 
   ok $cmd ~~ m:s/ ^ 'GET' '/user/neo4j' /, 'First line GET';
   ok $cmd ~~ m:s/ 'Content-Length:' '0' /, 'Content length';
@@ -49,7 +50,7 @@ subtest {
 subtest {
   my Neo4j::Connection $connection .= new( :host<localhost>, :port(7474));
   my Neo4j::User $user .= new( :user<m>, :password<p>);
-  my Neo4j::Command $command .= new;
+  my Neo4j::Command $command .= new(:$connection);
 
   my Str $statements = q:to/EOSTMTS/;
     { "statements":
@@ -69,12 +70,10 @@ subtest {
   my $body-size = $statements.chars;
 
   my Str $cmd = $command.build-command(
-    :$connection,
     :path</user/neo4j>,
     :$user,
     :body($statements)
   );
-#say $cmd;
 
   ok $cmd ~~ m:s/ ^ 'POST' '/user/neo4j' /, 'First line POST';
   ok $cmd ~~ m:s/ 'Content-Length:' <$body-size> /, "Content length $body-size";
@@ -83,6 +82,49 @@ subtest {
 
 }, "Command complex";
 
+#-------------------------------------------------------------------------------
+#
+subtest {
+  my Neo4j::Connection $connection .= new( :host<localhost>, :port(7474));
+  my Str $cmd = $connection.build-command(:path</user/neo4j>);
+
+  ok $cmd ~~ m:s/ ^ 'GET' '/user/neo4j' /, 'First line GET';
+  ok $cmd ~~ m:s/ 'Content-Length:' '0' /, 'Content length';
+  ok $cmd ~~ m:s/ 'Host:' 'localhost:7474' /, 'Host';
+
+}, "Connect command";
+
+#-------------------------------------------------------------------------------
+#
+subtest {
+  my Neo4j::Connection $connection .= new( :host<localhost>, :port(7474));
+
+  my Hash $statements = {
+    statements => [ {
+        statement => 'CREATE (n) RETURN id(n)'
+      }, {
+        statement => 'CREATE (n {p}) RETURN n',
+        parameters => {
+          p => {
+            name => 'Node 1',
+            addr => 'localhost'
+          }
+        }
+      }
+    ]
+  };
+
+  my Str $cmd = $connection.build-command(
+    :path</db/data/transaction/commit>,
+    :body($statements)
+  );
+say $cmd;
+
+  ok $cmd ~~ m:s/ ^ ('POST') ('/db/data/transaction/commit') /,
+     "First line $/[0] $/[1]";
+  ok $cmd ~~ m:s/ 'Content-Length:' (\d+) /, "Content length: $/[0]";
+
+}, "Connect command using json";
 
 #-------------------------------------------------------------------------------
 # Cleanup

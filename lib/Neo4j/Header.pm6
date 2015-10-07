@@ -4,7 +4,7 @@ use Neo4j;
 package Neo4j {
 
   class Header {
-  
+
     #---------------------------------------------------------------------------
     #
     method build-header( Str:D :$method, Str:D :$path, Hash:D :$hdata --> Str ) {

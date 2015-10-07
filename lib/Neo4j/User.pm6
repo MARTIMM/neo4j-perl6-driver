@@ -5,7 +5,7 @@ use Neo4j;
 package Neo4j {
 
   class User {
-  
+
     has Str $.uname;
     has Str $!passwd;
     has Str $.b64-auth;

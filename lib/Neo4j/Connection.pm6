@@ -1,5 +1,6 @@
 use v6;
 use Neo4j;
+use Neo4j::Database;
 use Neo4j::Command;
 
 package Neo4j {
@@ -11,7 +12,16 @@ package Neo4j {
 
     has Neo4j::ErrorCode $.status;
 
-    has Neo4j::Command $.command;
+    # Two forms of handling methods from the same object
+    #
+    has Neo4j::Command $.c1 handles <
+      build-command unravel-result
+      http-status http-reason
+    >;
+
+    has Neo4j::Command $.c2 handles (
+      :cmd-status<status>
+    );
 
     #---------------------------------------------------------------------------
     #
@@ -19,6 +29,7 @@ package Neo4j {
       $!host = $host;
       $!port = $port;
       self.connect;
+      $!c1 = $!c2 .= new(:connection(self));
     }
 
     #---------------------------------------------------------------------------
@@ -37,7 +48,7 @@ package Neo4j {
     #
     method connect ( --> Neo4j::ErrorCode ) {
       $!status = Neo4j::SUCCESS;
-      
+
       try {
         if ? $!sock {
           $!sock.close;
@@ -53,6 +64,21 @@ package Neo4j {
       }
 
       return $!status;
+    }
+
+    #---------------------------------------------------------------------------
+    #
+    method database ( Str:D $name --> Neo4j::Database ) {
+      return Neo4j::Database.new( :$name, :connection(self));
+    }
+
+    #---------------------------------------------------------------------------
+    #
+    method send ( :$request ) {
+
+      $!sock.print($request);
+      my Str $result = $!sock.recv;
+
     }
 
     #---------------------------------------------------------------------------
