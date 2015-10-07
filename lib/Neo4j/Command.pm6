@@ -28,7 +28,7 @@ package Neo4j {
     multi method build-command (
       Neo4j::User :$user,
       Str:D :$path,
-      Hash:D :$body,
+      Hash:D :$body!,
       Bool :$compress = False;
       --> Str
     ) {
@@ -77,9 +77,10 @@ package Neo4j {
     #
     multi method unravel-result ( Str:D $result --> Array ) {
 
+say "R:\n$result";
       my Str $header-text;
       my Str $body-text;
-      ( $header-text, $body-text) = $result.split( /"\n\n"/);
+      ( $header-text, $body-text) = $result.split( /\n\n/);
 
       my Hash $h;
       for $header-text.lines -> $l {
@@ -125,7 +126,8 @@ package Neo4j {
         }
       }
 
-      return [ $h, from-json($body-text)];
+      my $data = ?$body-text ?? from-json($body-text) !! {};
+      return [ $h, $data];
     }
   }
 }

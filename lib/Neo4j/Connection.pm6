@@ -11,6 +11,7 @@ package Neo4j {
     has IO::Socket::INET $.sock;
 
     has Neo4j::ErrorCode $.status;
+    has Neo4j::ErrorCode $.neo-status;
 
     # Two forms of handling methods from the same object
     #
@@ -74,11 +75,28 @@ package Neo4j {
 
     #---------------------------------------------------------------------------
     #
-    method send ( :$request ) {
+    method send ( $request --> Array ) {
 
       $!sock.print($request);
-      my Str $result = $!sock.recv;
 
+      my Array $result = self.unravel-result($!sock.recv);
+      if self.cmd-status ~~ Neo4j::HTTP-ERROR {
+        given $result[1]<errors>[0]<message> {
+          when "No authorization header supplied." {
+            $!neo-status = Neo4j::NEO-NOAUTHSUP;
+          }
+
+          when "Invalid username or password." {
+            $!neo-status = Neo4j::NEO-USRPWINV;
+          }
+        }
+      }
+      
+      else {
+        $!neo-status = self.cmd-status;
+      }
+
+      return $result;
     }
 
     #---------------------------------------------------------------------------
