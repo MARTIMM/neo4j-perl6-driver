@@ -6,8 +6,14 @@
   "name": "Neo4j",
   "provides": {
     "Neo4j":                    "lib/Neo4j.pm6",
-    "Neo4j::Rest":              "lib/Neo4j/Rest.pm6"
+    "Neo4j::Rest":              "lib/Neo4j/Rest.pm6",
+    "Neo4j::Command":           "lib/Neo4j/Command.pm6",
+    "Neo4j::Command::Create":   "lib/Neo4j/Command/Create.pm6",
+    "Neo4j::Connection":        "lib/Neo4j/Connection.pm6",
+    "Neo4j::Database":          "lib/Neo4j/Database.pm6",
+    "Neo4j::Header":            "lib/Neo4j/Header.pm6",
+    "Neo4j::User":              "lib/Neo4j/User.pm6"
   },
   "source-url": "git://github.com/MARTIMM/neo4j-perl6-driver.git",
-  "version": "0.0.1"
+  "version": "0.1.0"
 }

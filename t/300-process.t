@@ -72,7 +72,7 @@ subtest {
 
   my Neo4j::User $user .= new( :user<m>, :password<p>);
   $cmd = $connection.build-command( :$user, :path</user/neo4j>);
-  my Array $r = $connection.send($cmd);
+  $r = $connection.send($cmd);
 
   is $connection.cmd-status, Neo4j::HTTP-ERROR, 'Failure';
   is $connection.http-status, Neo4j::HTTP-CLIENT-ERROR, 'Client failure';
@@ -83,9 +83,9 @@ subtest {
   is $connection.neo-status, Neo4j::NEO-USRPWINV, 'Neo4j::NEO-USRPWINV';
 
 
-  my Neo4j::User $user .= new( :user<neo4j>, :password<P0nnuk1>);
+  $user .= new( :user<neo4j>, :password<P0nnuk1>);
   $cmd = $connection.build-command( :$user, :path</user/neo4j>);
-  my Array $r = $connection.send($cmd);
+  $r = $connection.send($cmd);
 
   is $connection.cmd-status, Neo4j::SUCCESS, 'Success';
   is $connection.http-status, Neo4j::HTTP-SUCCESS, 'Authentication ok';
@@ -97,6 +97,22 @@ subtest {
   is $connection.neo-status, Neo4j::SUCCESS, 'Neo-status == cmd-status: Success';
 
 }, "Command send receive";
+
+#-------------------------------------------------------------------------------
+#
+subtest {
+
+  my Neo4j::Connection $connection .= new( :host<localhost>, :port(7474));
+  my Neo4j::User $user .= new( :user<neo4j>, :password<P0nnuk1>);
+  my Hash $statements = {
+    statements => [ ${
+        statement => 'MATCH (n:Person) RETURN n'
+      }    ]
+  };
+  my $cmd = $connection.build-command( :$user, :path</db/data/node/10>, :$statements);
+  my Array $r = $connection.send($cmd);
+
+}, "Command send receive with existing data";
 
 #-------------------------------------------------------------------------------
 # Cleanup
