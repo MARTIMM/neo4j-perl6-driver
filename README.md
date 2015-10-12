@@ -1,5 +1,7 @@
 # Neo4j Graph Database Driver for Perl 6
 
+[![Build Status](https://travis-ci.org/MARTIMM/neo4j-perl6-driver.svg?branch=master)](https://travis-ci.org/MARTIMM/neo4j-perl6-driver)
+
 ![Leaf](doc/neo4j-logo-2015.png)
 
 ## DESCRIPTION
@@ -8,8 +10,8 @@ Perl 6 driver to access the Neo4j Graph Database.
 
 ## Versions
 
-* Perl6:        2015-09-206-g8a195fa
-* MoarVM:       2015-09-39-g1434283
+* Perl6:        2015.09-346-g0251b52
+* MoarVM:       2015.09-74-gedc44b5
 * Neo4j:        2.2.5
 
 ## CHANGELOG
