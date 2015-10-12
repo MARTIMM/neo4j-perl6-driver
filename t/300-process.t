@@ -107,12 +107,33 @@ subtest {
   my Hash $statements = {
     statements => [ ${
         statement => 'MATCH (n:Person) RETURN n'
-      }    ]
+      }
+    ]
   };
-  my $cmd = $connection.build-command( :$user, :path</db/data/node/10>, :$statements);
+  my $cmd = $connection.build-command( :$user, :path</db/data/transaction/commit>, :$statements);
   my Array $r = $connection.send($cmd);
+  is $r[1]<errors>[0], Any, 'No errors'
 
-}, "Command send receive with existing data";
+}, "Command MATCH transaction commit";
+
+#-------------------------------------------------------------------------------
+#
+subtest {
+
+  my Neo4j::Connection $connection .= new( :host<localhost>, :port(7474));
+  my Neo4j::User $user .= new( :user<neo4j>, :password<P0nnuk1>);
+  my Hash $statements = {
+    statements => [ ${
+        statement => 'MATCH (n:Person) RETURN n'
+      }
+    ]
+  };
+  my $cmd = $connection.build-command( :$user, :path</db/data/transaction>, :$statements);
+  my Array $r = $connection.send($cmd);
+  
+  
+
+}, "Command MATCH start transaction and end with commit";
 
 #-------------------------------------------------------------------------------
 # Cleanup
