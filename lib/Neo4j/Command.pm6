@@ -28,7 +28,7 @@ package Neo4j {
     multi method build-command (
       Neo4j::User :$user,
       Str:D :$path,
-      Hash:D :$body!,
+      Hash:D :statements(:data(:$body))!,
       Bool :$compress = False;
       --> Str
     ) {
@@ -45,7 +45,7 @@ package Neo4j {
     multi method build-command (
       Neo4j::User :$user,
       Str:D :$path,
-      Str :$body = '',
+      Str :statements(:data(:$body)) = '',
       Bool :$compress = False;
       --> Str
     ) {
@@ -70,6 +70,7 @@ package Neo4j {
       $cmd = $!header.build-header( :$method, :$path, :hdata($h)) ~ "\n";
       $cmd ~= $cmd-body if +$h<Content-Length>;
 
+say "Rq:\n$cmd";
       return $!command = $cmd;
     }
 
@@ -77,7 +78,7 @@ package Neo4j {
     #
     multi method unravel-result ( Str:D $result --> Array ) {
 
-say "R:\n$result";
+say "Rs:\n$result";
       my Str $header-text;
       my Str $body-text;
       ( $header-text, $body-text) = $result.split( /\n\n/);
@@ -85,10 +86,10 @@ say "R:\n$result";
       my Hash $h;
       for $header-text.lines -> $l {
         if $l ~~ m:s/ ^ 'HTTP/' \d+ '.' \d+
-                      $<status>=(\d+) $<reason>=(\w+)
+                      $<status>=(\d+) $<reason>=([\w+|\s]*)
                       $ / {
 
-#say "Status: $/<status>, $/<reason>";
+say "Status: $/<status>, $/<reason>";
           $!http-reason = ~$/<reason>;
           given ~$/<status> {
             when m/^1\d\d/ {

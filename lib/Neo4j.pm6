@@ -1,6 +1,6 @@
 use v6;
 
-package Neo4j:ver<0.0.1> {
+package Neo4j:ver<0.1.0> {
 
   our enum ErrorCode <
     SUCCESS CONNECT-FAIL
